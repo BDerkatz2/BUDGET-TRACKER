@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Budget Tracker",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/server.js",
+      "runtimeExecutable": "C:/Program Files/nodejs/node.exe",
+      "env": {
+        "PORT": "3000"
+      }
+    }
+  ]
+}
