@@ -3,7 +3,8 @@ const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 
 const localDbPath = path.join(__dirname, "..", "data", "budget-tracker.db");
-const dbPath = process.env.DB_PATH || localDbPath;
+const vercelDbPath = path.join("/tmp", "budget-tracker.db");
+const dbPath = process.env.DB_PATH || (process.env.VERCEL ? vercelDbPath : localDbPath);
 
 fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 const db = new sqlite3.Database(dbPath);

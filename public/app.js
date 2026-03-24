@@ -1,4 +1,11 @@
 const getStoredToken = () => localStorage.getItem("token") || sessionStorage.getItem("token");
+const API_BASE = (window.BUDGET_API_BASE || "").replace(/\/+$/, "");
+
+const buildApiUrl = (path) => {
+  if (/^https?:\/\//i.test(path)) return path;
+  return API_BASE ? `${API_BASE}${path}` : path;
+};
+
 const state = {
   token: getStoredToken(),
   accounts: [],
@@ -48,7 +55,7 @@ const apiFetch = async (path, options = {}) => {
     headers["Content-Type"] = "application/json";
   }
 
-  const response = await fetch(path, { ...options, headers });
+  const response = await fetch(buildApiUrl(path), { ...options, headers });
   if (!response.ok) {
     const error = await response.json().catch(() => ({ error: "Request failed" }));
     throw new Error(error.error || "Request failed");
@@ -897,8 +904,6 @@ const loadBudgetTargets = async () => {
     .join("");
 };
 
-init();
-
 const setActivePage = (page) => {
   document.querySelectorAll("main [data-page]").forEach((section) => {
     section.style.display = section.getAttribute("data-page") === page ? "block" : "none";
@@ -931,3 +936,9 @@ document.querySelectorAll(".tab").forEach((tab) => {
 });
 
 setActivePage("auth");
+
+init().catch((err) => {
+  setStatus("auth-status", err.message || "Failed to initialize app.");
+  setAuthState(false);
+  setActivePage("auth");
+});
